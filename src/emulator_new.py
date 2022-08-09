@@ -97,7 +97,9 @@ class Market:
         self.t0 = window_state - 1
         self.sensor_names = ['s_{}'.format(i) for i in range(1,22)]
 
-        self.unit_nr_choice, self.sensor_name_choice = self.sample()
+        # self.unit_nr_choice, self.sensor_name_choice = self.sample()
+        self.unit_nr_choice = 1
+        self.sensor_name_choice = "s_4"
         self.sample_data = self.df[self.df["unit_nr"] == self.unit_nr_choice][["unit_nr", self.sensor_name_choice, "RUL"]]
         self.max_sample_RUL = self.sample_data["RUL"].max()
 
@@ -112,6 +114,8 @@ if __name__ == '__main__':
                  failure_cost=-1000.,
                  optimum_buffer=30)
 
-    print(env.reset())
+    env.reset()
+    state, reward, t_max = env.step(action=1)
+    print("state: {}".format(state),"\n","reward: {}".format(reward),"\n","t_max: {}".format(t_max))
 
 
