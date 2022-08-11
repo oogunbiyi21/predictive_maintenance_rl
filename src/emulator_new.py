@@ -115,7 +115,9 @@ if __name__ == '__main__':
                  optimum_buffer=30)
 
     env.reset()
-    state, reward, t_max = env.step(action=1)
-    print("state: {}".format(state),"\n","reward: {}".format(reward),"\n","t_max: {}".format(t_max))
+    # print("state: {}".format(state),"\n","reward: {}".format(reward),"\n","t_max: {}".format(t_max))
+    for i in range(env.max_sample_RUL):
+        state, reward, t_max = env.step(action=0)
+        print("reward: {}".format(reward),"\n")
 
 
