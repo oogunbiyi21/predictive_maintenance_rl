@@ -32,10 +32,11 @@ class Market:
         state = self.sample_data[self.sensor_name_choice][t - self.window_state + 1: t + 1].copy()
         norm = state.mean()
         state = (state/norm-1)*100 # not sure why this is being done, maybe normalisation?
+
         # for i in range(1):
         #     norm = np.mean(state[:, i])
         #     state[:, i] = (state[:, i] / norm - 1.) * 100
-        return state
+        return state, self.valid_actions
 
     def get_maintain_reward(self):
         t = self.t
@@ -54,7 +55,7 @@ class Market:
         if midway_point > t:
             reward = self.failure_cost
         else:
-            reward = self.max_sample_RUL - t
+            reward = self.reward_replace
         return reward
 
     def step(self, action):
@@ -67,7 +68,10 @@ class Market:
             raise ValueError('no such action: ' + str(action))
 
         self.t += 1
-        return self.get_state(), reward, self.t == self.t_max
+
+        if self.t == self.t_max or action == 1:
+            done = True
+        return self.get_state(), reward, done, self.valid_actions
 
     def sample(self):
         unit_nr_list = list(self.df["unit_nr"].unique())
@@ -80,20 +84,26 @@ class Market:
                  csv_name,
                  window_state,
                  reward_increment,
+                 reward_replace,
                  reward_reduction,
                  failure_cost,
-                 optimum_buffer):
+                 optimum_buffer,
+                 n_action=2,
+                 n_var=1):
 
         self.df = pd.read_csv(csv_name)
         self.window_state = window_state
         self.reward_increment = reward_increment
+        self.reward_replace = reward_replace
         self.reward_reduction = reward_reduction
         self.failure_cost = failure_cost
         self.optimum_buffer = optimum_buffer
 
-        self.n_action = 2
-        self.state_shape = (window_state, 1)
+        self.n_action = n_action
+        self.n_var = n_var
+        self.state_shape = (window_state, self.n_var)
         self.action_labels = ['maintain', 'replace']
+        self.valid_actions = [0, 1]  # 0 for maintain, 1 for replace
         self.t0 = window_state - 1
         self.sensor_names = ['s_{}'.format(i) for i in range(1,22)]
 
@@ -110,6 +120,7 @@ if __name__ == '__main__':
     env = Market(csv_name="main_data.csv",
                  window_state=10,
                  reward_increment=10.,
+                 reward_replace=100,
                  reward_reduction=1.,
                  failure_cost=-1000.,
                  optimum_buffer=30)

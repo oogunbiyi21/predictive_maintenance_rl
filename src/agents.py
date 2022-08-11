@@ -62,6 +62,8 @@ class Agent:
 
 
 def add_dim(x, shape):
+	print("x:", x)
+	print("shape:", shape)
 	return np.reshape(x, (1,) + shape)
 
 
