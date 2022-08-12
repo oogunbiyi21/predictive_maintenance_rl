@@ -25,9 +25,6 @@ class Simulator:
             action = self.agent.act(state, exploration, valid_actions)
             next_state, reward, done, valid_actions = self.env.step(action)
 
-            print("next state:", next_state)
-            print("next state shape:", next_state.shape)
-
             cum_rewards.append(prev_cum_rewards + reward)
             prev_cum_rewards = cum_rewards[-1]
             actions.append(action)
