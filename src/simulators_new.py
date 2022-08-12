@@ -61,7 +61,7 @@ class Simulator:
 
         for n in range(n_episode):
 
-            print('\ntraining...')
+            print('\ntraining... episode: {}'.format(n))
             exploration = max(exploration_min, exploration * exploration_decay)
             explorations.append(exploration)
             explored_cum_rewards, explored_actions, _ = self.play_one_episode(exploration, print_t=print_t)
