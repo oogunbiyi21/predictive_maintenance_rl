@@ -44,7 +44,7 @@ class Market:
         rul = self.max_sample_RUL - t
         if rul > self.optimum_buffer:
             reward = self.reward_increment
-        elif self.optimum_buffer > rul > self.window_state:
+        elif self.optimum_buffer >= rul >= self.window_state:
             reward = self.reward_reduction
         else:
             reward = self.failure_cost
@@ -122,14 +122,19 @@ if __name__ == '__main__':
                  window_state=10,
                  reward_increment=10.,
                  reward_replace=100,
-                 reward_reduction=1.,
-                 failure_cost=-1000.,
+                 reward_reduction=-1000.,
+                 failure_cost=-200000.,
                  optimum_buffer=30)
 
     env.reset()
     # print("state: {}".format(state),"\n","reward: {}".format(reward),"\n","t_max: {}".format(t_max))
+    # print(len(env.sample_data))
+    rewards = []
     for i in range(env.max_sample_RUL):
-        state, reward, t_max = env.step(action=0)
+        action = random.choice([0, 1])
+        state, reward, _, _ = env.step(action=action)
         print("reward: {}".format(reward),"\n")
+        rewards.append(reward)
+    print("total reward: {}".format(sum(rewards)))
 
 

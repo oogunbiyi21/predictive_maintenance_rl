@@ -61,14 +61,15 @@ class Simulator:
 
         for n in range(n_episode):
 
+            print("*" * 20)
             print('\ntraining... episode: {}'.format(n))
             exploration = max(exploration_min, exploration * exploration_decay)
             explorations.append(exploration)
             explored_cum_rewards, explored_actions, _ = self.play_one_episode(exploration, print_t=print_t)
-            print("*" * 20)
+
             print("explored_cum_rewards", "\n", explored_cum_rewards, "\n")
             print("explored_actions", "\n", explored_actions, "\n")
-            print("*"*20)
+
             explored_total_rewards.append(100. * explored_cum_rewards[-1] / self.env.max_sample_RUL)
             safe_cum_rewards, safe_actions, _ = self.play_one_episode(0, training=False,
                                                                       print_t=False)
@@ -106,6 +107,7 @@ class Simulator:
                     os.path.join(fld_save, 'total_rewards.png'),
                     MA_window)
                     """
+            print("*" * 20)
 
     def test(self, n_episode, save_per_episode=10, subfld='testing'):
 
