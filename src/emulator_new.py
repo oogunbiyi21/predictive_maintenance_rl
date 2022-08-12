@@ -24,19 +24,20 @@ class Market:
         self.max_reward = self.max_sample_RUL - self.window_state
         self.t = self.t0
         self.t_max = len(self.sample_data) - 1
-        return self.get_state()
+        return self.get_state(), self.valid_actions
 
     def get_state(self, t=None):
         if t is None:
             t = self.t
         state = self.sample_data[self.sensor_name_choice][t - self.window_state + 1: t + 1].copy()
         norm = state.mean()
-        state = (state/norm-1)*100 # not sure why this is being done, maybe normalisation?
+        state = (state/norm-1)*100  # not sure why this is being done, maybe normalisation?
+        state = state.to_numpy()
 
         # for i in range(1):
         #     norm = np.mean(state[:, i])
         #     state[:, i] = (state[:, i] / norm - 1.) * 100
-        return state, self.valid_actions
+        return state
 
     def get_maintain_reward(self):
         t = self.t

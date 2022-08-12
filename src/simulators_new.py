@@ -3,7 +3,7 @@ from lib import *
 
 class Simulator:
 
-    def play_one_episode(self, exploration, training=True,  print_t=False):
+    def play_one_episode(self, exploration, training=True,  print_t=True):
 
         state, valid_actions = self.env.reset()
         done = False
@@ -24,6 +24,9 @@ class Simulator:
 
             action = self.agent.act(state, exploration, valid_actions)
             next_state, reward, done, valid_actions = self.env.step(action)
+
+            print("next state:", next_state)
+            print("next state shape:", next_state.shape)
 
             cum_rewards.append(prev_cum_rewards + reward)
             prev_cum_rewards = cum_rewards[-1]
@@ -65,16 +68,22 @@ class Simulator:
             exploration = max(exploration_min, exploration * exploration_decay)
             explorations.append(exploration)
             explored_cum_rewards, explored_actions, _ = self.play_one_episode(exploration, print_t=print_t)
+            print("*" * 20)
+            print("explored_cum_rewards", "\n", explored_cum_rewards, "\n")
+            print("explored_actions", "\n", explored_actions, "\n")
+            print("*"*20)
             explored_total_rewards.append(100. * explored_cum_rewards[-1] / self.env.max_sample_RUL)
             safe_cum_rewards, safe_actions, _ = self.play_one_episode(0, training=False,
                                                                       print_t=False)
-            safe_total_rewards.append(100. * safe_cum_rewards[-1] / self.env.max_profit)
+            # safe_total_rewards.append(100. * safe_cum_rewards[-1] / self.env.max_profit)
+            print("episode_played")
+            safe_total_rewards.append(safe_cum_rewards[-1])
 
             MA_total_rewards = np.median(explored_total_rewards[-MA_window:])
             MA_safe_total_rewards = np.median(safe_total_rewards[-MA_window:])
 
             ss = [
-                str(n), self.env.title.replace(',', ';'), '%.1f' % (exploration * 100.),
+                str(n), '%.1f' % (exploration * 100.),
                                                           '%.1f' % (explored_total_rewards[-1]),
                                                           '%.1f' % (safe_total_rewards[-1]),
                                                           '%.1f' % MA_total_rewards, '%.1f' % MA_safe_total_rewards,
@@ -118,7 +127,7 @@ class Simulator:
             safe_cum_rewards, safe_actions, _ = self.play_one_episode(0, training=False)
             safe_total_rewards.append(100. * safe_cum_rewards[-1] / self.env.max_profit)
             MA_safe_total_rewards = np.median(safe_total_rewards[-MA_window:])
-            ss = [str(n), self.env.title.replace(',', ';'),
+            ss = [str(n),
                   '%.1f' % (safe_cum_rewards[-1]),
                   '%.1f' % (safe_total_rewards[-1]),
                   '%.1f' % MA_safe_total_rewards]
