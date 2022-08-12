@@ -80,10 +80,10 @@ def main():
     exploration_decay = 0.99
     exploration_min = 0.01
     window_state = 10
-    reward_increment = 10.,
-    reward_replace = 100,
-    reward_reduction = -1000.,
-    failure_cost = -200000.,
+    reward_increment = 10.
+    reward_replace = 100
+    reward_reduction = -1000.
+    failure_cost = -200000.
     optimum_buffer = 30
 
     env = Market(csv_name="main_data.csv",
