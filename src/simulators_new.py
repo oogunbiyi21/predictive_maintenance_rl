@@ -69,6 +69,7 @@ class Simulator:
 
             print("explored_cum_rewards", "\n", explored_cum_rewards, "\n")
             print("explored_actions", "\n", explored_actions, "\n")
+            print("explored_actions", "\n", explored_actions, "\n")
 
             explored_total_rewards.append(100. * explored_cum_rewards[-1] / self.env.max_sample_RUL)
             safe_cum_rewards, safe_actions, _ = self.play_one_episode(0, training=False,
@@ -124,7 +125,8 @@ class Simulator:
             print('\ntesting...')
 
             safe_cum_rewards, safe_actions, _ = self.play_one_episode(0, training=False)
-            safe_total_rewards.append(100. * safe_cum_rewards[-1] / self.env.max_profit)
+            # safe_total_rewards.append(100. * safe_cum_rewards[-1] / self.env.max_profit)
+            safe_total_rewards.append(safe_cum_rewards[-1])
             MA_safe_total_rewards = np.median(safe_total_rewards[-MA_window:])
             ss = [str(n),
                   '%.1f' % (safe_cum_rewards[-1]),
